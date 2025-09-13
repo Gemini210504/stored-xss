@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} - My Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .nav {
+            margin-bottom: 2rem;
+        }
+        
+        .nav a {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav a:hover {
+            background: #0056b3;
+        }
+        
+        .article {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .article-title {
+            color: #333;
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+        }
+        
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .article-content {
+            color: #444;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        
+        .comments-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .comments-title {
+            color: #333;
+            margin: 0 0 1.5rem 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .comment {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #007bff;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-date {
+            color: #666;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+        }
+        
+        .comment-content {
+            color: #555;
+            white-space: pre-wrap;
+        }
+        
+        .comment-form {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        .comment-form h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+        
+        .flash-message {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .no-comments {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .article-title {
+                font-size: 1.5rem;
+            }
+            
+            .article, .comments-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 {{ article.title|safe }}</h1>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 7v4H5.83l3.58-3.59L8 6l-6 6 6 6 1.41-1.41L5.83 13H19V7z"/>
+                </svg>
+                Back to Home
+            </a>
+            <a href="/create">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                </svg>
+                Write Article
+            </a>
+        </nav>
+        
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        <div class="xss-warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V19A2,2 0 0,0 5,21H11V19.5L12.5,21H19A2,2 0 0,0 21,19V11L21,9M12,15H10V17H12V15M12,7H10V13H12V7Z"/>
+            </svg>
+            <span><strong>XSS Testing Mode:</strong> HTML and JavaScript content will be executed. Use for security testing only.</span>
+        </div>
+        
+        <article class="article">
+            <h1 class="article-title">{{ article.title|safe }}</h1>
+            <div class="article-meta">
+                <span><strong>By:</strong> {{ article.author|safe }}</span>
+                <span><strong>Published:</strong> {{ article.created_at[:19] }}</span>
+            </div>
+            <div class="article-content">{{ article.content|safe }}</div>
+        </article>
+        
+        <section class="comments-section">
+            <h2 class="comments-title">
+                💬 Comments ({{ comments|length }})
+            </h2>
+            
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="comment">
+                        <div class="comment-author">
+                            {{ comment.author|safe }}
+                            <span class="comment-date">{{ comment.created_at[:19] }}</span>
+                        </div>
+                        <div class="comment-content">{{ comment.content|safe }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments">
+                    <p>💭 No comments yet. Be the first to comment!</p>
+                </div>
+            {% endif %}
+            
+            <div class="comment-form">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: inline; margin-right: 0.5rem;">
+                        <path d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z"/>
+                    </svg>
+                    Leave a Comment
+                </h3>
+                <form method="POST" action="{{ url_for('add_comment', post_id=article.id) }}" id="commentForm">
+                    <div class="form-group">
+                        <label for="author">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: inline; margin-right: 0.5rem;">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            Your Name:
+                        </label>
+                        <input type="text" id="author" name="author" required maxlength="100" 
+                               placeholder="Enter your name..." onInput="updateCharCount(this, 100)">
+                        <span class="char-counter" id="authorCounter" style="position: absolute; bottom: 0.5rem; right: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">0/100</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: inline; margin-right: 0.5rem;">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            Comment:
+                        </label>
+                        <textarea id="content" name="content" required maxlength="1000" 
+                                  placeholder="Share your thoughts... (HTML/JS allowed for testing)" onInput="updateCharCount(this, 1000)"></textarea>
+                        <span class="char-counter" id="contentCounter" style="position: absolute; bottom: 0.5rem; right: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">0/1000</span>
+                    </div>
+                    <button type="submit" class="btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                        </svg>
+                        Post Comment
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        function updateCharCount(element, maxLength) {
+            const currentLength = element.value.length;
+            const counterId = element.id + 'Counter';
+            const counter = document.getElementById(counterId);
+            if (counter) {
+                counter.textContent = `${currentLength}/${maxLength}`;
+                
+                // Color coding for character count
+                if (currentLength > maxLength * 0.9) {
+                    counter.style.color = '#ef4444';
+                } else if (currentLength > maxLength * 0.7) {
+                    counter.style.color = '#f59e0b';
+                } else {
+                    counter.style.color = '#94a3b8';
+                }
+            }
+        }
+        
+        // Auto-resize textarea
+        const textarea = document.getElementById('content');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.max(120, this.scrollHeight) + 'px';
+            });
+        }
+        
+        // Form submission loading state
+        const form = document.getElementById('commentForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.style.opacity = '0.7';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>Posting...';
+            });
+        }
+    </script>="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <article class="article">
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-meta">
+            <strong>By:</strong> {{ article.author }} • 
+            <strong>Published:</strong> {{ article.created_at[:19] }}
+        </div>
+        <div class="article-content">{{ article.content }}</div>
+    </article>
+    
+    <section class="comments-section">
+        <h2 class="comments-title">
+            💬 Comments ({{ comments|length }})
+        </h2>
+        
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment-author">
+                        {{ comment.author }}
+                        <span class="comment-date">{{ comment.created_at[:19] }}</span>
+                    </div>
+                    <div class="comment-content">{{ comment.content }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-comments">
+                <p>No comments yet. Be the first to comment!</p>
+            </div>
+        {% endif %}
+        
+        <div class="comment-form">
+            <h3>💭 Leave a Comment</h3>
+            <form method="POST" action="{{ url_for('add_comment', post_id=article.id) }}">
+                <div class="form-group">
+                    <label for="author">Your Name:</label>
+                    <input type="text" id="author" name="author" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="content">Comment:</label>
+                    <textarea id="content" name="content" required maxlength="1000" 
+                              placeholder="Share your thoughts..."></textarea>
+                </div>
+                <button type="submit" class="btn">Post Comment</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
